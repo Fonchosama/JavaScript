@@ -18,7 +18,7 @@ pokemonList.forEach(function (pokemon) {
     pokemon.name +
       ' is about:' +
       pokemon.height +
-      'cm ' +
+      'm ' +
       'and its type is:' +
       pokemon.type
   );
