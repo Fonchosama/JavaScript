@@ -14,11 +14,7 @@
 // }
 
 let pokemonRepository = (function () {
-  let pokemonList = [
-    { name: 'bulbasaur', height: 0.7, type: ['grass', 'poison'] },
-    { name: 'charmander', height: 0.6, type: ['fire'] },
-    { name: 'squirtle', height: 0.5, type: ['water'] },
-  ];
+  let pokemonList = [];
 
   function getAll() {
     return pokemonList;
@@ -29,7 +25,9 @@ let pokemonRepository = (function () {
   }
 
   function showDetails(pokemon) {
-    console.log(pokemon);
+    pokemonRepository.loadDetails(pokemon).then(function () {
+      console.log(pokemon);
+    });
   }
 
   function addListItem(pokemon) {
@@ -46,15 +44,56 @@ let pokemonRepository = (function () {
     });
   }
 
+  function loadList() {
+    return fetch('https://pokeapi.co/api/v2/pokemon/')
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (json) {
+        json.results.forEach(function (item) {
+          let pokemon = {
+            name: item.name,
+            detailsUrl: item.url,
+          };
+          add(pokemon);
+        });
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }
+
+  function loadDetails(pokemon) {
+    let url = pokemon.detailsUrl;
+    return fetch(url)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (details) {
+        pokemon.imgUrl = details.sprites.front_default;
+        pokemon.height = details.height;
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }
+
   return {
     getAll,
     add,
     addListItem,
+    loadList,
+    loadDetails,
   };
 })();
 
-pokemonRepository.add({ name: 'pikachu', height: 0.4, type: ['electric'] });
+pokemonRepository.loadList().then(function () {
+  let pokemonList = pokemonRepository.getAll();
 
-pokemonRepository.getAll().forEach(function (pokemon) {
-  pokemonRepository.addListItem(pokemon);
+  // pokemonRepository.getAll().forEach(function (pokemon) {
+  // pokemonRepository.addListItem(pokemon); })
+
+  pokemonList.forEach(function (pokemon) {
+    pokemonRepository.addListItem(pokemon);
+  });
 });
