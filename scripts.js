@@ -14,7 +14,7 @@ let pokemonRepository = (function () {
     let listItem = document.createElement('li');
     let button = document.createElement('button');
     button.innerText = pokemon.name;
-    button.classList.add('pokemon-button'); //Can't add the button bootstrap mod here 
+    button.classList.add('pokemon-button'); //Can't add the button bootstrap mod here ->> btn btn-light
     button.type.add
     listItem.appendChild(button);
     nuevoElemento.appendChild(listItem);
